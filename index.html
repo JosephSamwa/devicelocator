@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        #location-info {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            display: none;
+        }
+        p {
+            margin: 10px 0;
+        }
+        span {
+            font-weight: bold;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #firstAlert{
+            background-color: green;
+            padding: 20px;
+            border-radius: 20px;
+        }
+        #secondAlert{
+            background-color: green;
+            padding: 10px;
+            border-radius: 20px;
+        }
+        .payment{
+            justify-content: center;
+            display: flex;
+            flex-direction: row;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <select name="code" id="code">
+            <option value="">Locate the device by?...</option>
+            <option value="IMEI">IMEI</option>
+            <option value="IP address">IP address</option>
+        </select>
+    </div>
+    
+    <div class="IP" id="ipInput" style="display:none;">
+        <label for="ip">IP address:</label>
+        <input type="text" name="ip" id="ip" placeholder="Enter the target IP address..." required/><br />
+    </div>
+    
+    <div class="IMEI" id="imeiInput" style="display:none;">
+        <label for="imei">IMEI number:</label>
+        <input type="text" name="imei" id="imei" placeholder="Enter the target IMEI number..." required/>  
+    </div><br />
+    
+    <button id="view-location" style="display:none;">View Location</button>
+    
+    <div id="firstAlert" style="display:none;">
+        Locating the device please wait...  
+    </div>
+    
+    <div id="secondAlert" style="display:none;">
+        Congratulations! The device is successfully located ... Complete the payment to view the live location of the device! 
+    </div><br /><br />
+    
+    <div class="payment" id="payment" style="display:none;">
+        <button id="locateBt">Payment done</button>
+    </div>
+    
+    <div id="location-info" style="display:none">
+        <h1>IP Location Information</h1>
+        <p>Country: <span id="country"></span></p>
+        <p>Region: <span id="region"></span></p>
+        <p>City: <span id="city"></span></p>
+        <p>Latitude: <span id="latitude"></span></p>
+        <p>Longitude: <span id="longitude"></span></p>
+        <p>Timezone: <span id="timezone"></span></p>
+        <p>ISP: <span id="isp"></span></p>
+        <p>Live Location: <a id="live-location" href="#" target="_blank">View on Map</a></p>
+    </div>
+    
+    <script>
+        let ID = 0;
+        const codeSelect = document.getElementById('code');
+        const imeiForm = document.getElementById('imeiInput');
+        const ipForm = document.getElementById('ipInput');
+        const payment = document.getElementById('payment');
+        const locateBt = document.getElementById('locateBt');
+        const locationInfo = document.getElementById('location-info');
+        const viewLocationButton = document.getElementById('view-location');
+        const Alert1 = document.getElementById('firstAlert');
+        const Alert2 = document.getElementById('secondAlert');
+
+        codeSelect.addEventListener('change', () => {
+            if (codeSelect.value === 'IMEI') {
+                ipForm.style.display = 'none';
+                imeiForm.style.display = 'block';
+                codeSelect.style.display = 'none';
+            } else if (codeSelect.value === 'IP address') {
+                imeiForm.style.display = 'none';
+                ipForm.style.display = 'block';
+                codeSelect.style.display = 'none';
+            } else {
+                imeiForm.style.display = 'none';
+                ipForm.style.display = 'none';
+            }
+            viewLocationButton.style.display = 'block'; // Show the "View Location" button
+        });
+
+        viewLocationButton.addEventListener('click', () => {
+            const ipInputValue = document.getElementById('ip').value;
+            const imeiInputValue = document.getElementById('imei').value;
+            ID = codeSelect.value === 'IMEI' ? imeiInputValue : ipInputValue;
+
+            ipForm.style.display = 'none';
+            imeiForm.style.display = 'none';
+            viewLocationButton.style.display = 'none';
+            Alert1.style.display = 'block';
+            setTimeout(() => {
+                Alert1.style.display = 'none';
+                Alert2.style.display = 'block';
+            }, 2000);
+            payment.style.display = 'block';
+        });
+
+        locateBt.addEventListener('click', () => {
+            Alert2.style.display = 'none';
+            locationInfo.style.display = 'block';
+            locateBt.style.display = 'none';
+            console.log(ID);
+        });
+        async function getLocation(ipAddress) {
+    const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+    const data = await response.json();
+    if (data.status === 'success') {
+        return {
+            country: data.country,
+            region: data.regionName,
+            city: data.city,
+            latitude: data.lat,
+            longitude: data.lon,
+            timezone: data.timezone,
+            isp: data.isp
+        };
+    } else {
+        return { error: 'Unable to get location' };
+    }
+}
+
+// Example usage
+const ipAddress = ID;  // Replace with the IP address you want to look up
+getLocation(ipAddress).then(location => {
+    if (!location.error) {
+        document.getElementById('country').textContent = location.country;
+        document.getElementById('region').textContent = location.region;
+        document.getElementById('city').textContent = location.city;
+        document.getElementById('latitude').textContent = location.latitude;
+        document.getElementById('longitude').textContent = location.longitude;
+        document.getElementById('timezone').textContent = location.timezone;
+        document.getElementById('isp').textContent = location.isp;
+
+        const liveLocationUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+        document.getElementById('live-location').href = liveLocationUrl;
+    } else {
+        document.getElementById('location-info').textContent = location.error;
+    }
+});
+    </script>
+</body>
+</html>

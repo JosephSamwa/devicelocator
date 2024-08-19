@@ -45,6 +45,25 @@
             border-radius: 4px;
             margin-bottom: 10px;
         }
+        .loader {
+  width: 48px;
+  height: 48px;
+  border: 5px dotted #FFF;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 2s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
         #location-info {
             background: #fff;
             padding: 20px;
@@ -72,6 +91,11 @@
             padding: 20px;
             border-radius: 20px;
         }
+     #erR{
+            background-color: green;
+            padding: 20px;
+            border-radius: 20px;
+        }
         #secondAlert{
             background-color: green;
             padding: 10px;
@@ -83,43 +107,88 @@
             flex-direction: row;
             margin: 20px;
         }
+        .Form{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 20px;
+            background-color: #00FFB6;
+            padding: 20px;
+        }
+       .Arr{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 20px;
+            background-color:#0099FF;
+            padding: 20px;
+        }
+        button {
+            text-align: center;
+            background-color:#FF00A3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+       input{
+            border-radius: 10px;
+            border:none;
+            padding: 10px;
+        }
+        select{
+            border-radius: 10px;
+            border:none;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="container">
         <select name="code" id="code">
-            <option value="">Locate the device by?...</option>
-            <option value="IMEI">IMEI</option>
-            <option value="IP address">IP address</option>
+        <option value="">Locate the device by?...</option>
+        <option value="IMEI">IMEI</option>
+        <option value="IP address">IP address</option>
         </select>
     </div>
-    
-    <div class="IP" id="ipInput" style="display:none;">
+<div class="Form" id="Form" style="display:none;">
+        <div id="erR" style="display:none;">
+        <p>Please enter a valid IP address or IMEI number</p>  
+        </div>
+        <div class="IP" id="ipInput" style="display:none;">
         <label for="ip">IP address:</label>
         <input type="text" name="ip" id="ip" placeholder="Enter the target IP address..." required/><br />
-    </div>
+         </div>
     
-    <div class="IMEI" id="imeiInput" style="display:none;">
+         <div class="IMEI" id="imeiInput" style="display:none;">
         <label for="imei">IMEI number:</label>
         <input type="text" name="imei" id="imei" placeholder="Enter the target IMEI number..." required/>  
-    </div><br />
+         </div><br />
     
     <button id="view-location" style="display:none;">View Location</button>
+</div>
+<div class="Arr" id="Arr" style="display:none;">
     
     <div id="firstAlert" style="display:none;">
-        Locating the device please wait...  
+        <span class="loader"></span>Locating the device please wait...  
     </div>
     
     <div id="secondAlert" style="display:none;">
-        Congratulations! The device is successfully located ... Complete the payment to view the live location of the device! 
+        The device was successfully located ... Complete the payment to view the live location of the device! 
     </div><br /><br />
-    
+    <!--Eliud add a payment section ..this button shoild direct the user to the payment section-->
     <div class="payment" id="payment" style="display:none;">
-        <button id="locateBt">Payment done</button>
+        <button id="locateBt">Proceed</button>
     </div>
-    
+ </div>  
     <div id="location-info" style="display:none">
-        <h1>IP Location Information</h1>
+        <h1>Location Information</h1>
         <p>Country: <span id="country"></span></p>
         <p>Region: <span id="region"></span></p>
         <p>City: <span id="city"></span></p>
@@ -131,7 +200,11 @@
     </div>
     
     <script>
-        let ID = 0;
+        let ID;
+        let ipAddress;
+        const ARR = document.getElementById('Arr');
+        const FORM = document.getElementById('Form');
+        const ErrMsg = document.getElementById('erR');
         const codeSelect = document.getElementById('code');
         const imeiForm = document.getElementById('imeiInput');
         const ipForm = document.getElementById('ipInput');
@@ -144,10 +217,12 @@
 
         codeSelect.addEventListener('change', () => {
             if (codeSelect.value === 'IMEI') {
+                FORM.style.display = 'block';
                 ipForm.style.display = 'none';
                 imeiForm.style.display = 'block';
                 codeSelect.style.display = 'none';
             } else if (codeSelect.value === 'IP address') {
+                FORM.style.display = 'block';
                 imeiForm.style.display = 'none';
                 ipForm.style.display = 'block';
                 codeSelect.style.display = 'none';
@@ -162,45 +237,29 @@
             const ipInputValue = document.getElementById('ip').value;
             const imeiInputValue = document.getElementById('imei').value;
             ID = codeSelect.value === 'IMEI' ? imeiInputValue : ipInputValue;
-
+if(ID){
+            FORM.style.display = 'none';
             ipForm.style.display = 'none';
             imeiForm.style.display = 'none';
             viewLocationButton.style.display = 'none';
+            ARR.style.display = 'block';
             Alert1.style.display = 'block';
             setTimeout(() => {
                 Alert1.style.display = 'none';
                 Alert2.style.display = 'block';
-            }, 2000);
-            payment.style.display = 'block';
+                payment.style.display = 'block';
+            }, 5000)
+            
+}else {
+    ErrMsg.style.display = 'block'
+    setTimeout(()=>{ErrMsg.style.display = 'none'},2000);
+}
         });
 
         locateBt.addEventListener('click', () => {
             Alert2.style.display = 'none';
-            locationInfo.style.display = 'block';
-            locateBt.style.display = 'none';
-            console.log(ID);
-        });
-        async function getLocation(ipAddress) {
-    const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
-    const data = await response.json();
-    if (data.status === 'success') {
-        return {
-            country: data.country,
-            region: data.regionName,
-            city: data.city,
-            latitude: data.lat,
-            longitude: data.lon,
-            timezone: data.timezone,
-            isp: data.isp
-        };
-    } else {
-        return { error: 'Unable to get location' };
-    }
-}
-
-// Example usage
-const ipAddress = ID;  // Replace with the IP address you want to look up
-getLocation(ipAddress).then(location => {
+            ARR.style.display = 'none';
+            getLocation(ipAddress).then(location => {
     if (!location.error) {
         document.getElementById('country').textContent = location.country;
         document.getElementById('region').textContent = location.region;
@@ -216,6 +275,31 @@ getLocation(ipAddress).then(location => {
         document.getElementById('location-info').textContent = location.error;
     }
 });
+            locationInfo.style.display = 'block';
+            locateBt.style.display = 'none';
+        });
+        async function getLocation(ipAddress) {
+            ipAddress = ID;
+    const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+    const data = await response.json();
+    if (data.status === 'success') {
+    const MyipAddress = data.ip;
+    console.log(`User's IP address: ${MyipAddress}`);
+        return {
+            country: data.country,
+            region: data.regionName,
+            city: data.city,
+            latitude: data.lat,
+            longitude: data.lon,
+            timezone: data.timezone,
+            isp: data.isp
+        };
+        console.log(data.ip);
+    } else {
+       // return { error: 'Unable to get location' };
+        console.log(data.ip);
+    }
+}
     </script>
 </body>
 </html>

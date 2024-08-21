@@ -238,6 +238,8 @@ if(CODE){
             const liveLocationUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
             document.getElementById('live-location').href = liveLocationUrl;
         } else {
+document.getElementById('payAlert1').style.display= 'block';
+        document.getElementById('payAlert1').textContent=location.error;
         payments.style.display = 'none';
         locationInfo.style.display = 'block';
         locateBt.style.display = 'none';
@@ -261,6 +263,8 @@ async function getLocation(ipAddress) {
             isp: data.isp
         };
     } else {
+document.getElementById('payAlert1').style.display= 'block';
+        document.getElementById('payAlert1').textContent=data.error;
         console.log(data.error); // Log error message
         return { error: 'Unable to get location' }; // Return error
     }

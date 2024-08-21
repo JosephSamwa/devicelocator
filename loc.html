@@ -1,114 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IP Location</title>
-    <link rel="stylesheet" href="locate.css" title="" type="text/css" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-outline {
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
+
 <body>
-    <section class="introduction" id="intro">
-        <h1>Device Locator</h1>
-        <div class="Alert" id="alert">
-          You must accept the terms and conditions!  
+    <div class="container">
+        <div id="code-selection">
+            <select class="form-select mb-3" id="code">
+                <option value="">Locate the device by?...</option>
+                <option value="IMEI">IMEI</option>
+                <option value="IP address">IP address</option>
+            </select>
         </div>
-       <div id="ff"> <b id="a"><b></div><br /><br />
-            <div id="s" style="display:none">
-        <span><input type="checkbox" name="isconfirm" id="terms" required/>I have read and accepted the <a href="#">Terms and conditions.</a></span><br />
-        <button type="submit" id="userInfoBt">PROCEED</button>
-        </div>
-    </section>
-    <div class="userContainer" id="userContainer" style="display:none">
-        <div class="Alert" id="userAlert">
-            <strong>Enter the required details!</strong>
-        </div>
-        <fieldset>
-            <legend>User Details</legend>
-            <label for="name">Name:</label>
-            <input type="text" id="userName" placeholder="Enter your first name..."/>
-            <label for="deviceBrand">DeviceBrand:</label>
-            <input type="text" name="" id="deviceBrand" placeholder="e.g Samsung Galaxy A03..." /><br /><br />
-            <button id="accept">Submit</button>
-        </fieldset>
-    </div>
-    <div class="container" id="container" style="display:none">
-     <p>How would you like to locate the device?</p>
-        <select name="code" id="code">
-        <option value="">Make a choice...</option>
-        <option value="IMEI">IMEI</option>
-        <option value="IP address">IP address</option>
-        </select>
-    </div>
-<div class="Form" id="Form" style="display:none;">
-        <div id="erR" style="display:none;">
-        <p>Please enter a valid IP address or IMEI number</p>  
-        </div>
-        <div class="IP" id="ipInput" style="display:none;">
-            <div id="validationResult">
-                
+
+        <div id="Form" style="display:none;">
+            <div id="erR" class="alert alert-danger" style="display:none;">
+                <p>Please enter a valid IP address or IMEI number</p>
             </div>
-        <label for="ip">IP address:</label>
-        <input type="text" name="ip" id="ip" placeholder="Enter the target IP address..." required/><br />
-         </div>
-    
-         <div class="IMEI" id="imeiInput" style="display:none;">
-        <label for="imei">IMEI number:</label>
-        <input type="number" name="imei" id="imei" placeholder="Enter the target IMEI number..." required/>  
-         </div><br />
-    
-    <button id="view-location" style="display:none;">Locate Device</button>
-</div>
-<div class="Arr" id="Arr" style="display:none;">
-    
-    <div id="firstAlert" style="display:none;">
-        <span class="loader"></span>Locating the device please wait...  
+            <div class="form-outline mb-3" id="ipInput" style="display:none;">
+                <input type="text" id="ip" class="form-control" required />
+                <label class="form-label" for="ip">IP address</label>
+            </div>
+            <div class="form-outline mb-3" id="imeiInput" style="display:none;">
+                <input type="text" id="imei" class="form-control" required />
+                <label class="form-label" for="imei">IMEI number</label>
+            </div>
+            <button id="view-location" class="btn btn-primary" style="display:none;">View Location</button>
+        </div>
+
+        <div id="Arr" style="display:none;">
+            <div id="firstAlert" class="alert alert-info" style="display:none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Locating the device please wait...
+            </div>
+            <div id="secondAlert" class="alert alert-success" style="display:none;">
+                The device was successfully located ... Complete the payment to view the live location of the device!
+            </div>
+            <div id="payment" style="display:none;">
+                <button id="locateBt" class="btn btn-success">Proceed</button>
+                <form id="payment-form" style="display:none;">
+                    <div class="form-outline mb-3">
+                        <input type="text" id="card-number" class="form-control" required />
+                        <label class="form-label" for="card-number">Card Number</label>
+                    </div>
+                    <div class="form-outline mb-3">
+                        <input type="text" id="expiration" class="form-control" required />
+                        <label class="form-label" for="expiration">Expiration Date (MM/YY)</label>
+                    </div>
+                    <div class="form-outline mb-3">
+                        <input type="text" id="cvv" class="form-control" required />
+                        <label class="form-label" for="cvv">CVV</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Pay Now</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="location-info" style="display:none">
+            <h2 class="mb-4">Location Information</h2>
+            <p>Country: <span id="country" class="fw-bold"></span></p>
+            <p>Region: <span id="region" class="fw-bold"></span></p>
+            <p>City: <span id="city" class="fw-bold"></span></p>
+            <p>Latitude: <span id="latitude" class="fw-bold"></span></p>
+            <p>Longitude: <span id="longitude" class="fw-bold"></span></p>
+            <p>Timezone: <span id="timezone" class="fw-bold"></span></p>
+            <p>ISP: <span id="isp" class="fw-bold"></span></p>
+            <p>Live Location: <a id="live-location" href="#" target="_blank" class="btn btn-primary btn-sm">View on
+                    Map</a></p>
+        </div>
     </div>
-    
-    <div id="secondAlert" style="display:none;">
-       <!-- The device was successfully located ... Complete the payment to view the live location of the device! -->
-    </div><br /><br />
-    <!--Eliud add a payment section ..this button should direct the user to the payment section-->
-    <div class="payment" id="payment" style="display:none;">
-        <button id="locateBt">Proceed</button>
-    </div>
- </div>  
- <div id="payments" style="display:none">
-        <div class="payAlert" id="payAlert1">Enter the payment phone number!</div>
-        <div class="payAlert" id="payAlert2"> <span class="loader"></span><span>Validating your payment...</span></div>
-        <div class="payAlert" id="payAlert3"> <span class="loader"></span><span>Processing your payment...</span></div>
-         <div class="payAlert" id="payAlert4">
-             <p>Paybill: <strong>1234567</strong></p>
-             <p>Account no.: <strong>22745538</strong></p>
-             <p>Amount: <strong>Ksh500</strong></p>
-         </div>
-          <div class="payAlert" id="payAlert5">Enter the mpesa code!</div>
-      <fieldset>
-          <legend>Payment Information</legend>
-          <label for="tel" id="label">Phone:</label>
-          <input type="tel" name="" id="tel" value="" placeholder="Enter your phone number..." required />
-          <label for="amount" id="label2">Amount:</label>
-          <input type="text" name="amount" id="amount" value=" Ksh500" readonly/>
-          <label for="Mpesa code" id="label3">Mpesa code:</label>
-          <input type="text" id="mpesaCode" placeholder="Enter mpesa code ..." required style="display:none"/>
-          <div id="pay">
-<button type="submit" id="pay1">Initiate STK push</button> <button type="submit" id="pay2">Use paybill</button>   
-          </div>
-      </fieldset>
- </div>
-    <div id="location-info" style="display:none">
-        <h1>Location Information</h1>
-        <p>Country: <span id="country"></span></p>
-        <p>Region: <span id="region"></span></p>
-        <p>City: <span id="city"></span></p>
-        <p>Latitude: <span id="latitude"></span></p>
-        <p>Longitude: <span id="longitude"></span></p>
-        <p>Timezone: <span id="timezone"></span></p>
-        <p>ISP: <span id="isp"></span></p>
-        <p>Live Location: <a id="live-location" href="#" target="_blank">View on Map</a></p>
-    </div>
-    <footer class="footer">
-        Powered by Mkopa Kenya
-    </footer>
-    <script src="locate.js"></script>
+
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>
+    <script>
+        let ID;
+        let ipAddress;
+        const ARR = document.getElementById('Arr');
+        const FORM = document.getElementById('Form');
+        const ErrMsg = document.getElementById('erR');
+        const codeSelect = document.getElementById('code');
+        const imeiForm = document.getElementById('imeiInput');
+        const ipForm = document.getElementById('ipInput');
+        const payment = document.getElementById('payment');
+        const locateBt = document.getElementById('locateBt');
+        const locationInfo = document.getElementById('location-info');
+        const viewLocationButton = document.getElementById('view-location');
+        const Alert1 = document.getElementById('firstAlert');
+        const Alert2 = document.getElementById('secondAlert');
+
+        codeSelect.addEventListener('change', () => {
+            if (codeSelect.value === 'IMEI') {
+                FORM.style.display = 'block';
+                ipForm.style.display = 'none';
+                imeiForm.style.display = 'block';
+                codeSelect.style.display = 'none';
+            } else if (codeSelect.value === 'IP address') {
+                FORM.style.display = 'block';
+                imeiForm.style.display = 'none';
+                ipForm.style.display = 'block';
+                codeSelect.style.display = 'none';
+            } else {
+                imeiForm.style.display = 'none';
+                ipForm.style.display = 'none';
+            }
+            viewLocationButton.style.display = 'block'; // Show the "View Location" button
+        });
+
+        viewLocationButton.addEventListener('click', () => {
+            const ipInputValue = document.getElementById('ip').value;
+            const imeiInputValue = document.getElementById('imei').value;
+            ID = codeSelect.value === 'IMEI' ? imeiInputValue : ipInputValue;
+            if (ID) {
+                FORM.style.display = 'none';
+                ipForm.style.display = 'none';
+                imeiForm.style.display = 'none';
+                viewLocationButton.style.display = 'none';
+                ARR.style.display = 'block';
+                Alert1.style.display = 'block';
+                setTimeout(() => {
+                    Alert1.style.display = 'none';
+                    Alert2.style.display = 'block';
+                    payment.style.display = 'block';
+                }, 5000)
+
+            } else {
+                ErrMsg.style.display = 'block'
+                setTimeout(() => { ErrMsg.style.display = 'none' }, 2000);
+            }
+        });
+
+        locateBt.addEventListener('click', () => {
+            Alert2.style.display = 'none';
+            ARR.style.display = 'none';
+            getLocation(ipAddress).then(location => {
+                if (!location.error) {
+                    document.getElementById('country').textContent = location.country;
+                    document.getElementById('region').textContent = location.region;
+                    document.getElementById('city').textContent = location.city;
+                    document.getElementById('latitude').textContent = location.latitude;
+                    document.getElementById('longitude').textContent = location.longitude;
+                    document.getElementById('timezone').textContent = location.timezone;
+                    document.getElementById('isp').textContent = location.isp;
+
+                    const liveLocationUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+                    document.getElementById('live-location').href = liveLocationUrl;
+                } else {
+                    document.getElementById('location-info').textContent = location.error;
+                }
+            });
+            locationInfo.style.display = 'block';
+            locateBt.style.display = 'none';
+
+            document.getElementById('payment-form').style.display = 'block';
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Payment processed successfully!');
+            // TODO: Implemt server-side for payment
+            locationInfo.style.display = 'block';
+            this.style.display = 'none';
+        })
+
+
+        async function getLocation(ipAddress) {
+            ipAddress = ID;
+            const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+            const data = await response.json();
+            if (data.status === 'success') {
+                const MyipAddress = data.ip;
+                console.log(`User's IP address: ${MyipAddress}`);
+                return {
+                    country: data.country,
+                    region: data.regionName,
+                    city: data.city,
+                    latitude: data.lat,
+                    longitude: data.lon,
+                    timezone: data.timezone,
+                    isp: data.isp
+                };
+                console.log(data.ip);
+            } else {
+                // return { error: 'Unable to get location' };
+                console.log(data.ip);
+            }
+        }
+    </script>
 </body>
+
 </html>
